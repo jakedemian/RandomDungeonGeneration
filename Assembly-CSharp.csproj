@@ -63,6 +63,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\GenerateDungeon.cs" />
     <Compile Include="Assets\Scripts\GenerateDungeonEditor.cs" />
+    <Compile Include="Assets\Scripts\GridHelper.cs" />
+    <Compile Include="Assets\Scripts\RoomDirection.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Program Files/Unity/Projects/Randumbgeon/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

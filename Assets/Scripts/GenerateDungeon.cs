@@ -1,13 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GenerateDungeon : MonoBehaviour {
     public GameObject[] oneDoorPrefabs;
     public GameObject[] twoDoorPrefabs;
+    public GameObject[] twoDoorAlternatePrefabs;
     public GameObject[] threeDoorPrefabs;
     public GameObject[] fourDoorPrefabs;
-    public GameObject[] emptyRoomPrefab;
+    public GameObject emptyRoomPrefab;
+
+    public int roomWidth = 7;
+    public int roomHeight = 7;
+
+    [Range(2,20)]
+    public int chanceOfGeneratingExtraRoom = 4;
 
     private int dungeonWidth = 4;
     private int dungeonHeight = 4;
@@ -19,6 +27,14 @@ public class GenerateDungeon : MonoBehaviour {
     private List<GameObject> roomObjects;
 
     private void Init() {
+        GameObject[] rooms = GameObject.FindGameObjectsWithTag("Room");
+        if(rooms.Length > 0) {
+            for (int i = 0; i < rooms.Length; i++) {
+                GameObject room = rooms[i];
+                Destroy(room);
+            }
+        }
+
         layout = new string[dungeonHeight, dungeonWidth];
         criticalPath = new List<Node>();
         roomTypeData = new List<RoomTypeData>();
@@ -101,6 +117,11 @@ public class GenerateDungeon : MonoBehaviour {
         return xIsAtEdge && yIsAtEdge;
     }
 
+
+    /// <summary>
+    /// Generates a dungeon floor map
+    /// </summary>
+    /// <returns></returns>
     public void GenerateNewDungeon() {
         Init();
 
@@ -110,12 +131,8 @@ public class GenerateDungeon : MonoBehaviour {
         }
 
         PopulateExtraRooms();
-        PrintLayout();
+        //PrintLayout();
 
-        // now we have the general room layout
-        // now we need to generate some data as to what type of room each room should be
-        // types are EMPTY, ONE, TWO, THREE, FOUR.
-        // these values coorespond to the number of doors this room type should have.
         for (int y = 0; y < layout.GetLength(1); y++) {
             for (int x = 0; x < layout.GetLength(0); x++) {
                 if (layout[y, x] == null || layout[y, x].Equals("") || layout[y,x].Equals("X")) {
@@ -148,10 +165,129 @@ public class GenerateDungeon : MonoBehaviour {
         }
 
         // now we need to create a map using preconstructed room prefabs
+        for(int i = 0; i < roomTypeData.Count; i++) {
+            RoomTypeData thisRoomData = roomTypeData[i];
+            GameObject roomPrefab = GetRoomPrefab(thisRoomData.roomType);
+            Vector3Int roomGridPosition = new Vector3Int(roomWidth * thisRoomData.x, roomHeight * thisRoomData.y, 0);
+            Vector3 roomWorldPosition = GlobalGrid.GetGrid().CellToWorld(roomGridPosition);
 
-        // once the prefabs are placed on the grid, we need to iterate through the critical path and rotate the placed rooms so that the doors line up correctly
+            GameObject newRoom = Instantiate(roomPrefab, roomWorldPosition, Quaternion.identity);
 
-        // now that the critical path is lined up.. hmm as i type this i'm thinking i might have to do all of them at once
+            if(thisRoomData.roomType == RoomType.FOURDOOR) {
+                // we don't have to align anything, since any orientation of a 4 door room will work.
+                // give it a random rotation then move on
+                newRoom.GetComponent<RoomDirection>().RotateRandom();
+                continue;
+            } else if (thisRoomData.roomType == RoomType.EMPTY) {
+                // we don't care about the orientation of empty rooms
+                continue;
+            }
+
+            Vector2[] adjacentRoomDirections = GetAdjacentRoomDirections(thisRoomData.x, thisRoomData.y);
+            Vector2[] roomDoorDirections = newRoom.GetComponent<RoomDirection>().GetDoorDirections();
+
+            if(!Vector2ArraysAreEqual(adjacentRoomDirections, roomDoorDirections)){
+                // we need to rotate the room up to 3 times
+                bool rotationMatchFound = false;
+                for(int j = 0; j < 3; j++) {
+                    newRoom.GetComponent<RoomDirection>().RotateRoom90Degrees();
+                    roomDoorDirections = newRoom.GetComponent<RoomDirection>().GetDoorDirections();
+                    if(Vector2ArraysAreEqual(adjacentRoomDirections, roomDoorDirections)) {
+                        rotationMatchFound = true;
+                        break;
+                    }
+                }
+
+                if(!rotationMatchFound && thisRoomData.roomType == RoomType.TWODOOR) {
+                    Debug.Log("Resorting to alternate two door!");
+                    // we need to try the alternate 2 door room
+                    Destroy(newRoom);
+                    roomPrefab = twoDoorAlternatePrefabs[Random.Range(0, twoDoorAlternatePrefabs.Length)];
+                    newRoom = Instantiate(roomPrefab, roomWorldPosition, Quaternion.identity);
+                    roomDoorDirections = newRoom.GetComponent<RoomDirection>().GetDoorDirections();
+
+                    if (!Vector2ArraysAreEqual(adjacentRoomDirections, roomDoorDirections)) {
+                        // we need to rotate the room up to 3 times
+                        rotationMatchFound = false;
+                        for (int k = 0; k < 3; k++) {
+                            newRoom.GetComponent<RoomDirection>().RotateRoom90Degrees();
+                            roomDoorDirections = newRoom.GetComponent<RoomDirection>().GetDoorDirections();
+                            if (Vector2ArraysAreEqual(adjacentRoomDirections, roomDoorDirections)) {
+                                rotationMatchFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!rotationMatchFound) {
+                            Debug.LogError("Could not figure out the rotation of this two door room after trying both types.");
+                        }
+                    }
+                } else if(!rotationMatchFound){
+                    Debug.LogError("Serious problem here, we couldn't find a rotation that worked.");
+                }
+            }
+        }
+    }
+
+    private bool Vector2ArraysAreEqual(Vector2[] a, Vector2[] b) {
+        for(int i = 0; i < a.Length; i++) {
+            bool matchFound = false;
+            for(int j = 0; j < b.Length; j++) {
+                if(Vector2.Equals(a[i],b[j])) {
+                    matchFound = true;
+                    break;
+                }
+            }
+
+            if (!matchFound) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Vector2[] GetAdjacentRoomDirections(int x, int y) {
+        List<Vector2> adjacentRoomDirectionsList = new List<Vector2>();
+
+        // check up
+        if(IsRoomValidAndPopulated(x, y + 1)) {
+            adjacentRoomDirectionsList.Add(Vector2.up);
+        }
+
+        // check down
+        if (IsRoomValidAndPopulated(x, y - 1)) {
+            adjacentRoomDirectionsList.Add(Vector2.down);
+        }
+
+        // check right
+        if(IsRoomValidAndPopulated(x + 1, y)) {
+            adjacentRoomDirectionsList.Add(Vector2.right);
+        }
+
+        // check left
+        if (IsRoomValidAndPopulated(x - 1, y)) {
+            adjacentRoomDirectionsList.Add(Vector2.left);
+        }
+
+        Vector2[] adjacentRoomDirections = adjacentRoomDirectionsList.ToArray();
+        return adjacentRoomDirections;
+    }
+
+    public GameObject GetRoomPrefab(RoomType type) {
+        if(type == RoomType.EMPTY) {
+            return emptyRoomPrefab;
+        } else if (type == RoomType.ONEDOOR) {
+            return oneDoorPrefabs[Random.Range(0, oneDoorPrefabs.Length)];
+        } else if (type == RoomType.TWODOOR) {
+            return twoDoorPrefabs[Random.Range(0, twoDoorPrefabs.Length)];
+        } else if (type == RoomType.THREEDOOR) {
+            return threeDoorPrefabs[Random.Range(0, threeDoorPrefabs.Length)];
+        } else if (type == RoomType.FOURDOOR) {
+            return fourDoorPrefabs[Random.Range(0, fourDoorPrefabs.Length)];
+        }
+
+        Debug.LogWarning("Something went wrong in GetRoomPrefab, defaulting to giving empty room.");
+        return emptyRoomPrefab;
     }
 
     private bool GenerateCriticalPath() {
@@ -232,7 +368,7 @@ public class GenerateDungeon : MonoBehaviour {
         List<Vector2Int> neighboringCells = GetValidNeighboringRooms(x, y);
 
         if (neighboringCells.Count > 0) {
-            int extraRoomDiceRoll = Random.Range(0, 5);
+            int extraRoomDiceRoll = Random.Range(0, chanceOfGeneratingExtraRoom);
             if (extraRoomDiceRoll == 0) {
                 layout[y, x] = "R";
             }

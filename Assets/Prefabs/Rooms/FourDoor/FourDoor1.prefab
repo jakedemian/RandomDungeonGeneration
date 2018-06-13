@@ -658,9 +658,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4019396140269710}
+  - component: {fileID: 114593800141410944}
   m_Layer: 0
   m_Name: FourDoor1
-  m_TagString: Untagged
+  m_TagString: Room
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1567,6 +1568,22 @@ Transform:
   m_Father: {fileID: 4261021051603566}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114593800141410944
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1841409081931280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25d83480bffc204d87199b9eed6d277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorDirections:
+  - {x: 1, y: 0}
+  - {x: -1, y: 0}
+  - {x: 0, y: 1}
+  - {x: 0, y: -1}
 --- !u!212 &212016070368295676
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -254,7 +254,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.22352941, g: 0.2, b: 0.23921569, a: 0}
   m_projectionMatrixMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
@@ -269,7 +269,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 17
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -292,7 +292,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 10, y: 10, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -325,11 +325,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4519c84aefefae34ea5128b627559d71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oneDoorPrefabs: []
-  twoDoorPrefabs: []
-  threeDoorPrefabs: []
-  fourDoorPrefabs: []
-  emptyRoomPrefab: []
+  oneDoorPrefabs:
+  - {fileID: 1602769857022368, guid: 535fdf3e9fc406d45a35fc916f24e54a, type: 2}
+  twoDoorPrefabs:
+  - {fileID: 1131804007670632, guid: bed01352c12522d438f96060cf315ea1, type: 2}
+  - {fileID: 1983196711696006, guid: 0e99c1e2f8e25ea4e9a282411df77bb4, type: 2}
+  twoDoorAlternatePrefabs:
+  - {fileID: 1303235816580514, guid: d21970ed455e7174192e83e47bf6f1ae, type: 2}
+  - {fileID: 1916075047058148, guid: 778cfc3e97463eb4697eb1c870210f19, type: 2}
+  threeDoorPrefabs:
+  - {fileID: 1649488686266004, guid: 65c879d93ef398542922521ee9f4ff67, type: 2}
+  - {fileID: 1283824262894648, guid: 0a9da62e0cc87b1439a1a59f9f7155fa, type: 2}
+  fourDoorPrefabs:
+  - {fileID: 1841409081931280, guid: 8be8e1e2466f4a0498732e7d96ca02f9, type: 2}
+  - {fileID: 1083816295170548, guid: fc13cf86b2d9d2540b551056e953a102, type: 2}
+  emptyRoomPrefab: {fileID: 1022760157993530, guid: 919c732d82168584abe5761322da7361,
+    type: 2}
+  roomWidth: 7
+  roomHeight: 7
+  chanceOfGeneratingExtraRoom: 4
 --- !u!4 &827823898
 Transform:
   m_ObjectHideFlags: 0
@@ -352,6 +366,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1112288196}
   - component: {fileID: 1112288195}
+  - component: {fileID: 1112288197}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Grid
@@ -377,10 +392,21 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1112288194}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 210903666}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1112288197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1112288194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46562a2b1f14f9846889654598d431e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

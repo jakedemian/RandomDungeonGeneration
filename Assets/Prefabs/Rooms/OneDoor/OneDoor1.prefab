@@ -578,9 +578,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4661227308510434}
+  - component: {fileID: 114422741410523156}
   m_Layer: 0
   m_Name: OneDoor1
-  m_TagString: Untagged
+  m_TagString: Room
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1567,6 +1568,19 @@ Transform:
   m_Father: {fileID: 4066789207638482}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114422741410523156
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1602769857022368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25d83480bffc204d87199b9eed6d277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorDirections:
+  - {x: 0, y: 1}
 --- !u!212 &212040232604124222
 SpriteRenderer:
   m_ObjectHideFlags: 1

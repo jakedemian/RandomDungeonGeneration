@@ -99,9 +99,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4944298544041516}
+  - component: {fileID: 114973709856495540}
   m_Layer: 0
   m_Name: TwoDoor1
-  m_TagString: Untagged
+  m_TagString: Room
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1567,6 +1568,20 @@ Transform:
   m_Father: {fileID: 4732732326995262}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 270}
+--- !u!114 &114973709856495540
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1131804007670632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25d83480bffc204d87199b9eed6d277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorDirections:
+  - {x: 0, y: 1}
+  - {x: 1, y: 0}
 --- !u!212 &212019346176170572
 SpriteRenderer:
   m_ObjectHideFlags: 1
