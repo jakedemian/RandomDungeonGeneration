@@ -24,7 +24,12 @@ public class RoomDirection : MonoBehaviour {
     }
 
     public void RotateRandom() {
-        Debug.Log("TODO rotate a random amount!");
+        // could be cleaner and not use a loop, but I'd like to just
+        // use the RotateRoom90Degrees method to keep it simple
+        int numOfRotations = Random.Range(0, 4); // 0-3 rotations
+        for(int i = 0; i < numOfRotations; i++) {
+            RotateRoom90Degrees();
+        }
     }
 
     public Vector2[] GetDoorDirections() {

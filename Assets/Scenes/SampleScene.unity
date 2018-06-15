@@ -234,6 +234,7 @@ MonoBehaviour:
   fourDoorPrefabs:
   - {fileID: 1841409081931280, guid: 8be8e1e2466f4a0498732e7d96ca02f9, type: 2}
   - {fileID: 1083816295170548, guid: fc13cf86b2d9d2540b551056e953a102, type: 2}
+  - {fileID: 1481224660629504, guid: 97ecf09d2c2f1244d84de32abc0cd2c6, type: 2}
   emptyRoomPrefab: {fileID: 1022760157993530, guid: 919c732d82168584abe5761322da7361,
     type: 2}
   roomWidth: 7
