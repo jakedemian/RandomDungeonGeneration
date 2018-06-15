@@ -2,3 +2,4 @@
 ./obj
 ./Library
 *.meta
+./.vs
