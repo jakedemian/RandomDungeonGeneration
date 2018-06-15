@@ -1,5 +1,5 @@
-./Temp
-./obj
-./Library
-*.meta
-./.vs
+Temp/
+obj/
+Library/
+.vs/
+Packages/
